@@ -3,10 +3,6 @@ const fs = require("fs");
 
 const DB_FILE = "./anki_cloud_db.json";
 
-// ===============================
-// LOAD / INIT DATABASE
-// ===============================
-
 let db = { users: {}, sessions: {} };
 
 if (fs.existsSync(DB_FILE)) {
@@ -175,7 +171,6 @@ app.post("/1/sessions", (req, res) => {
         
     }
 
-    // Create session token
     const session_token = crypto.randomUUID();
     db.sessions[userid] = {
         session_token,
@@ -259,21 +254,15 @@ app.post("/1/overdrive/players/:user_id", (req, res) => {
 
     const update = body.update || {};
 
-    // Sync MD5
     if (update["str_rpl-md5"]) {
         user.profile_md5 = update["str_rpl-md5"];
-        user.profile_etag = update["str_rpl-md5"];   // CRITICAL FIX
+        user.profile_etag = update["str_rpl-md5"];
     }
 
-    // If name was not sent, KEEP existing name
     if (update["str_rpl-name"]) {
         user.username = update["str_rpl-name"];
     }
 
-    // If name missing, DO NOT overwrite it
-    // (real cloud keeps name stable)
-
-    // Keep other fields stable
     user.time_updated = new Date().toISOString();
     saveDB();
 
@@ -319,7 +308,6 @@ app.post("/1/overdrive/players/:user_id/rpl", (req, res) => {
     const user = Object.values(db.users).find(u => u.user_id === user_id);
     if (!user) return res.status(404).json({ error: "Not found" });
 
-    // Save the entire RPL document
     user.rpl = body.update || {};
     user.rpl_last_updated = new Date().toISOString();
 
@@ -335,7 +323,6 @@ app.get("/1/overdrive/players/:user_id/rpl", (req, res) => {
     const user = Object.values(db.users).find(u => u.user_id === user_id);
     if (!user) return res.status(404).json({ error: "Not found" });
 
-    // If no RPL exists, return empty document (game shows "Not Synced")
     const rpl = user.rpl || {};
 
     res.json({
