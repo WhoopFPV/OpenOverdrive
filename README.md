@@ -15,7 +15,7 @@ Close Anki Overdrive \
 Make sure its not patched yet \
 Connect phone to your PC and enable data transfer, and run patch_android.bat \
 Then enter your IP WITHOUT THE /1/ OR HTTP
-If the patcher closes unplug your phone and its patched! \
+If the patcher closes unplug your phone and its patched! 
 
 ## Todo list
 
